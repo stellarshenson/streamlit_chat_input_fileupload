@@ -1,198 +1,86 @@
-# streamlit-chat-with-fileupload
+# streamlit-chat-input-fileupload
 
-A Streamlit custom component providing a chat input box with integrated file upload widget.
-
-## Features
-
-- Text input field with send button
-- File attachment button (paperclip icon)
-- Single file upload at a time
-- File indicator showing attached filename with remove option
-- Enter key to send, Shift+Enter for newline
-- Base64 file encoding for seamless Python integration
-- Supports images (png, jpg, gif, webp) and documents (pdf, txt, csv, xlsx, docx, etc.)
+A Streamlit custom component providing a chat input box with integrated file upload.
 
 ## Installation
 
 ```bash
-pip install lib-streamlit-chat-with-fileupload
-```
-
-Or install from source:
-
-```bash
-git clone https://github.com/stellars-henson/streamlit-chat-with-fileupload.git
-cd streamlit-chat-with-fileupload
-pip install -e .
+pip install streamlit-chat-input-fileupload
 ```
 
 ## Usage
 
 ```python
 import streamlit as st
-from lib_streamlit_chat_with_fileupload import chat_input_with_upload
+from streamlit_chat_input_fileupload import chat_input_with_upload
 
-# Display the chat input component
-user_input = chat_input_with_upload(
-    placeholder="Send a message...",
-    disabled=False,
-    key="chat_input",
-)
+user_input = chat_input_with_upload(placeholder="Send a message...")
 
 if user_input:
-    text = user_input["text"]
-    file_info = user_input["file"]
+    st.write(f"Message: {user_input['text']}")
 
-    st.write(f"Message: {text}")
-
-    if file_info:
-        st.write(f"File: {file_info['name']}")
-        st.write(f"Size: {file_info['size']} bytes")
-        st.write(f"Type: {file_info['type']}")
-        # file_info['data'] contains the raw bytes
+    if user_input["file"]:
+        st.write(f"File: {user_input['file']['name']}")
+        # user_input["file"]["data"] contains raw bytes
 ```
 
-## API Reference
+## API
 
-### `chat_input_with_upload()`
-
-**Parameters:**
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `placeholder` | str | "Send a message..." | Placeholder text for the input field |
-| `disabled` | bool | False | Whether the input is disabled |
-| `key` | str or None | None | Unique key for the component instance |
-
-**Returns:**
-
-- `None` - When no message has been submitted
-- `dict` - When user submits a message:
-  - `text` (str): The text message
-  - `file` (dict or None): File information if attached
-    - `name` (str): Original filename
-    - `type` (str): MIME type
-    - `size` (int): File size in bytes
-    - `data` (bytes): Raw file content
-
-## Example with AWS Bedrock
+### chat_input_with_upload()
 
 ```python
-import boto3
+chat_input_with_upload(
+    placeholder="Send a message...",  # Input placeholder text
+    disabled=False,                   # Disable the input
+    key=None,                         # Unique component key
+)
+```
+
+**Returns** `None` or `dict`:
+- `text` (str): Message text
+- `file` (dict or None): `{name, type, size, data}` where `data` is bytes
+
+### Sending Files to User
+
+Use Streamlit's built-in `st.download_button` to send files back to the user:
+
+```python
 import streamlit as st
-from lib_streamlit_chat_with_fileupload import chat_input_with_upload
 
-# Initialize Bedrock client
-client = boto3.client("bedrock-runtime", region_name="us-east-1")
+# Text file
+st.download_button(
+    label="Download Report",
+    data="Report content here",
+    file_name="report.txt",
+    mime="text/plain",
+)
 
-# Chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# Binary file (e.g., generated image, PDF)
+st.download_button(
+    label="Download Image",
+    data=image_bytes,
+    file_name="output.png",
+    mime="image/png",
+)
 
-# Display messages
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-# Chat input
-user_input = chat_input_with_upload()
-
-if user_input:
-    text = user_input["text"]
-    file_info = user_input["file"]
-
-    # Build content for Bedrock
-    content = []
-    if file_info and file_info["type"].startswith("image/"):
-        content.append({
-            "image": {
-                "format": file_info["type"].split("/")[1],
-                "source": {"bytes": file_info["data"]},
-            }
-        })
-    if text:
-        content.append({"text": text})
-
-    # Call Bedrock
-    response = client.converse(
-        modelId="us.anthropic.claude-3-5-sonnet-20241022-v2:0",
-        messages=[{"role": "user", "content": content}],
-    )
-
-    assistant_text = response["output"]["message"]["content"][0]["text"]
-    st.write(assistant_text)
+# CSV data
+import pandas as pd
+df = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
+st.download_button(
+    label="Download CSV",
+    data=df.to_csv(index=False),
+    file_name="data.csv",
+    mime="text/csv",
+)
 ```
 
-## Packaging for Distribution
+## Features
 
-### Build the package
-
-```bash
-# Install build tools
-pip install build twine
-
-# Build source and wheel distributions
-python -m build
-
-# This creates:
-# - dist/lib_streamlit_chat_with_fileupload-0.1.6.tar.gz
-# - dist/lib_streamlit_chat_with_fileupload-0.1.6-py3-none-any.whl
-```
-
-### Upload to PyPI
-
-```bash
-# Upload to TestPyPI first (recommended)
-python -m twine upload --repository testpypi dist/*
-
-# Upload to PyPI
-python -m twine upload dist/*
-```
-
-### Install from PyPI
-
-```bash
-pip install lib-streamlit-chat-with-fileupload
-```
-
-## Development
-
-```bash
-# Clone repository
-git clone https://github.com/stellars-henson/streamlit-chat-with-fileupload.git
-cd streamlit-chat-with-fileupload
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate
-
-# Install in development mode with dev dependencies
-pip install -e ".[dev]"
-
-# Run the demo app
-make run_streamlit
-```
-
-## Project Structure
-
-```
-streamlit-chat-with-fileupload/
-├── lib_streamlit_chat_with_fileupload/
-│   ├── __init__.py
-│   ├── config.py
-│   └── chat_input_with_upload/
-│       └── __init__.py          # Component implementation
-├── app.py                        # Demo application
-├── pyproject.toml
-├── Makefile
-└── README.md
-```
-
-## Requirements
-
-- Python 3.12+
-- Streamlit 1.45+
+- Text input with send button
+- File attachment button
+- Auto light/dark theme detection
+- Supports images and documents
 
 ## License
 
-MIT License
+MIT

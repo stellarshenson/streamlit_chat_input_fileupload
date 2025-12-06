@@ -4,10 +4,10 @@ import boto3
 import streamlit as st
 from botocore.exceptions import ClientError
 
-from lib_streamlit_chat_with_fileupload.chat_input_with_upload import (
+from streamlit_chat_input_fileupload.chat_input_with_upload import (
     chat_input_with_upload,
 )
-from lib_streamlit_chat_with_fileupload.config import (
+from streamlit_chat_input_fileupload.config import (
     AWS_PROFILE,
     AWS_REGION,
     CLAUDE_MODELS,

@@ -675,46 +675,6 @@ wheels = [
 ]
 
 [[package]]
-name = "lib-streamlit-chat-with-fileupload"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "boto3" },
-    { name = "python-dotenv" },
-    { name = "streamlit" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "build" },
-    { name = "ipykernel" },
-    { name = "ipython" },
-    { name = "nbdime" },
-    { name = "pip" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "toml" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "boto3" },
-    { name = "build", marker = "extra == 'dev'" },
-    { name = "ipykernel", marker = "extra == 'dev'" },
-    { name = "ipython", marker = "extra == 'dev'" },
-    { name = "nbdime", marker = "extra == 'dev'" },
-    { name = "pip", marker = "extra == 'dev'" },
-    { name = "pytest", marker = "extra == 'dev'" },
-    { name = "pytest-cov", marker = "extra == 'dev'" },
-    { name = "python-dotenv" },
-    { name = "ruff", marker = "extra == 'dev'" },
-    { name = "streamlit" },
-    { name = "toml", marker = "extra == 'dev'" },
-]
-provides-extras = ["dev"]
-
-[[package]]
 name = "markupsafe"
 version = "3.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1413,6 +1373,46 @@ sdist = { url = "https://files.pythonhosted.org/packages/6f/ec/66ca1578587bbaaea
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d0/d4/cdafd4cc940937410f465ca7a77dd34237182c2ddece624e08db959496f8/streamlit-1.52.1-py3-none-any.whl", hash = "sha256:97fee2c3421d350fd65548e45a20f506ec1b651d78f95ecacbc0c2f9f838081c", size = 9024748, upload-time = "2025-12-05T18:55:39.713Z" },
 ]
+
+[[package]]
+name = "streamlit-chat-input-fileupload"
+version = "0.6.12"
+source = { editable = "." }
+dependencies = [
+    { name = "boto3" },
+    { name = "python-dotenv" },
+    { name = "streamlit" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "build" },
+    { name = "ipykernel" },
+    { name = "ipython" },
+    { name = "nbdime" },
+    { name = "pip" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+    { name = "toml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "boto3" },
+    { name = "build", marker = "extra == 'dev'" },
+    { name = "ipykernel", marker = "extra == 'dev'" },
+    { name = "ipython", marker = "extra == 'dev'" },
+    { name = "nbdime", marker = "extra == 'dev'" },
+    { name = "pip", marker = "extra == 'dev'" },
+    { name = "pytest", marker = "extra == 'dev'" },
+    { name = "pytest-cov", marker = "extra == 'dev'" },
+    { name = "python-dotenv" },
+    { name = "ruff", marker = "extra == 'dev'" },
+    { name = "streamlit" },
+    { name = "toml", marker = "extra == 'dev'" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "tenacity"

@@ -3,18 +3,17 @@ requires = [ "setuptools", "wheel",]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lib_streamlit_chat_with_fileupload"
-version = "0.1.6"
+name = "streamlit-chat-input-fileupload"
+version = "0.6.13"
 description = "Streamlit custom component that offers chat input box for messages - with files upload widget"
 readme = "README.md"
 requires-python = "~=3.12.0"
 classifiers = [ "Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License",]
 dependencies = [ "boto3", "python-dotenv", "streamlit",]
-[[project.authors]]
-name = "Stellars Henson <konrad.jelen@gmail.com>"
-
-[project.license]
-file = "LICENSE"
+license = "MIT"
+authors = [
+    { name = "Stellars Henson", email = "konrad.jelen@gmail.com" },
+]
 
 [project.optional-dependencies]
 dev = [ "build", "ipykernel", "ipython", "nbdime", "pip", "pytest", "pytest-cov", "toml", "ruff",]
@@ -24,17 +23,17 @@ include-package-data = true
 
 [tool.ruff]
 line-length = 99
-src = [ "lib_streamlit_chat_with_fileupload",]
-include = [ "pyproject.toml", "lib_streamlit_chat_with_fileupload/**/*.py",]
+src = [ "streamlit_chat_input_fileupload",]
+include = [ "pyproject.toml", "streamlit_chat_input_fileupload/**/*.py",]
 
 [tool.ruff.lint]
 extend-select = [ "I",]
 
 [tool.setuptools.packages.find]
 where = [ ".",]
-include = [ "lib_streamlit_chat_with_fileupload*",]
+include = [ "streamlit_chat_input_fileupload*",]
 exclude = [ "tests*",]
 
 [tool.ruff.lint.isort]
-known-first-party = [ "lib_streamlit_chat_with_fileupload",]
+known-first-party = [ "streamlit_chat_input_fileupload",]
 force-sort-within-sections = true

@@ -5,8 +5,8 @@
 #################################################################################
 
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-PROJECT_NAME = streamlit-chat-with-fileupload
-MODULE_NAME = lib_streamlit_chat_with_fileupload
+PROJECT_NAME = streamlit-chat-input-fileupload
+MODULE_NAME = streamlit_chat_input_fileupload
 PYTHON_VERSION = 3.12
 PYTHON_INTERPRETER = python
 
