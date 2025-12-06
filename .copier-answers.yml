@@ -1,0 +1,23 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v2.3.0+stellars57
+_src_path: https://github.com/stellarshenson/cookiecutter-data-science.git
+author_name: Stellars Henson <konrad.jelen@gmail.com>
+custom_config: ''
+dataset_storage: none
+dependency_file: pyproject.toml
+description: Streamlit custom component that offers chat input box for messages -
+    with files upload widget
+docker_support: 'No'
+docs: none
+env_encryption: 'Yes'
+env_name: stremlit-chat
+environment_manager: uv
+include_code_scaffold: 'Yes'
+jupyter_kernel_support: 'Yes'
+linting_and_formatting: ruff
+module_name: lib_streamlit_chat_with_fileupload
+open_source_license: MIT
+pydata_packages: none
+python_version_number: '3.12'
+repo_name: streamlit-chat-with-fileupload
+testing_framework: pytest
