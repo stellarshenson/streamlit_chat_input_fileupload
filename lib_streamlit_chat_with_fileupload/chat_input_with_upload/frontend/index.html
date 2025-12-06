@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Input with File Upload</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Source Sans Pro", sans-serif;
+            background-color: transparent;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background-color: #f0f2f6;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .text-input {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: #262730;
+            outline: none;
+            min-width: 0;
+        }
+
+        .text-input:focus {
+            border-color: #ff4b4b;
+        }
+
+        .text-input::placeholder {
+            color: #262730;
+            opacity: 0.5;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            padding: 10px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-file {
+            background-color: #e0e0e0;
+            color: #262730;
+            min-width: 40px;
+        }
+
+        .btn-send {
+            background-color: #ff4b4b;
+            color: white;
+            min-width: 40px;
+        }
+
+        .file-indicator {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background-color: #ff4b4b;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 150px;
+        }
+
+        .file-indicator.visible {
+            display: flex;
+        }
+
+        .file-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-remove {
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 4px;
+        }
+
+        .file-remove:hover {
+            opacity: 0.7;
+        }
+
+        .icon {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-input-container">
+        <input type="file" id="fileInput" class="file-input">
+        <button type="button" class="btn btn-file" id="fileBtn" title="Attach file">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+            </svg>
+        </button>
+        <div id="fileIndicator" class="file-indicator">
+            <span class="file-name" id="fileName"></span>
+            <span class="file-remove" id="fileRemove">x</span>
+        </div>
+        <input type="text" class="text-input" id="textInput" placeholder="Send a message...">
+        <button type="button" class="btn btn-send" id="sendBtn" title="Send">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // State
+        let fileData = null;
+
+        // Elements
+        const fileInput = document.getElementById('fileInput');
+        const fileBtn = document.getElementById('fileBtn');
+        const fileIndicator = document.getElementById('fileIndicator');
+        const fileNameEl = document.getElementById('fileName');
+        const fileRemove = document.getElementById('fileRemove');
+        const textInput = document.getElementById('textInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Wait for Streamlit to be available
+        function waitForStreamlit() {
+            if (typeof window.Streamlit !== 'undefined') {
+                initComponent();
+            } else {
+                setTimeout(waitForStreamlit, 50);
+            }
+        }
+
+        function initComponent() {
+            // Handle render events from Streamlit
+            window.Streamlit.events.addEventListener(
+                window.Streamlit.RENDER_EVENT,
+                onRender
+            );
+
+            // Tell Streamlit we're ready
+            window.Streamlit.setComponentReady();
+            window.Streamlit.setFrameHeight();
+        }
+
+        function onRender(event) {
+            const args = event.detail.args || {};
+
+            if (args.placeholder) {
+                textInput.placeholder = args.placeholder;
+            }
+
+            if (args.disabled) {
+                textInput.disabled = true;
+                sendBtn.disabled = true;
+                fileBtn.disabled = true;
+            } else {
+                textInput.disabled = false;
+                sendBtn.disabled = false;
+                fileBtn.disabled = false;
+            }
+
+            window.Streamlit.setFrameHeight();
+        }
+
+        function clearFile() {
+            fileData = null;
+            fileInput.value = '';
+            fileIndicator.classList.remove('visible');
+        }
+
+        function sendMessage() {
+            const text = textInput.value.trim();
+
+            if (!text && !fileData) {
+                return;
+            }
+
+            const message = {
+                text: text,
+                file: fileData
+            };
+
+            window.Streamlit.setComponentValue(message);
+
+            // Clear inputs after sending
+            textInput.value = '';
+            clearFile();
+        }
+
+        // Event listeners
+        fileBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileNameEl.textContent = file.name;
+                fileIndicator.classList.add('visible');
+
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const base64 = evt.target.result.split(',')[1];
+                    fileData = {
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        data: base64
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+            window.Streamlit.setFrameHeight();
+        });
+
+        fileRemove.addEventListener('click', () => {
+            clearFile();
+            window.Streamlit.setFrameHeight();
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        textInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Start
+        waitForStreamlit();
+    </script>
+</body>
+</html>
