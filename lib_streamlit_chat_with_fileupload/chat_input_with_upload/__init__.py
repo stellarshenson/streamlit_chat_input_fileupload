@@ -34,6 +34,32 @@ _COMPONENT_HTML = """
     padding: 0;
 }
 
+/* Light theme (default) */
+:root {
+    --chat-bg: #f0f2f6;
+    --chat-border: #e0e0e0;
+    --input-bg: #ffffff;
+    --input-text: #262730;
+    --input-placeholder: rgba(38, 39, 48, 0.5);
+    --btn-file-bg: #e0e0e0;
+    --btn-file-text: #262730;
+    --accent: #ff4b4b;
+    --accent-text: #ffffff;
+}
+
+/* Dark theme */
+.chat-input-container[data-theme="dark"] {
+    --chat-bg: #262730;
+    --chat-border: #4a4a5a;
+    --input-bg: #1a1a24;
+    --input-text: #fafafa;
+    --input-placeholder: rgba(250, 250, 250, 0.5);
+    --btn-file-bg: #4a4a5a;
+    --btn-file-text: #fafafa;
+    --accent: #ff4b4b;
+    --accent-text: #ffffff;
+}
+
 body {
     font-family: "Source Sans Pro", sans-serif;
     background-color: transparent;
@@ -44,30 +70,29 @@ body {
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background-color: #f0f2f6;
+    background-color: var(--chat-bg);
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--chat-border);
 }
 
 .text-input {
     flex: 1;
     padding: 10px 12px;
     font-size: 14px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--chat-border);
     border-radius: 6px;
-    background-color: #ffffff;
-    color: #262730;
+    background-color: var(--input-bg);
+    color: var(--input-text);
     outline: none;
     min-width: 0;
 }
 
 .text-input:focus {
-    border-color: #ff4b4b;
+    border-color: var(--accent);
 }
 
 .text-input::placeholder {
-    color: #262730;
-    opacity: 0.5;
+    color: var(--input-placeholder);
 }
 
 .file-input {
@@ -96,14 +121,14 @@ body {
 }
 
 .btn-file {
-    background-color: #e0e0e0;
-    color: #262730;
+    background-color: var(--btn-file-bg);
+    color: var(--btn-file-text);
     min-width: 40px;
 }
 
 .btn-send {
-    background-color: #ff4b4b;
-    color: white;
+    background-color: var(--accent);
+    color: var(--accent-text);
     min-width: 40px;
 }
 
@@ -112,8 +137,8 @@ body {
     align-items: center;
     gap: 4px;
     padding: 4px 8px;
-    background-color: #ff4b4b;
-    color: white;
+    background-color: var(--accent);
+    color: var(--accent-text);
     border-radius: 4px;
     font-size: 12px;
     max-width: 150px;
@@ -148,11 +173,11 @@ body {
 
 _COMPONENT_JS = """
 export default function(component) {
-    const { setTriggerValue, parentElement } = component;
-    const args = component.data || {};
+    const { data, setTriggerValue, parentElement } = component;
 
     let fileData = null;
 
+    const container = parentElement.querySelector('.chat-input-container');
     const fileInput = parentElement.querySelector('#fileInput');
     const fileBtn = parentElement.querySelector('#fileBtn');
     const fileIndicator = parentElement.querySelector('#fileIndicator');
@@ -161,12 +186,45 @@ export default function(component) {
     const textInput = parentElement.querySelector('#textInput');
     const sendBtn = parentElement.querySelector('#sendBtn');
 
-    // Apply args from Python
-    if (args.placeholder) {
-        textInput.placeholder = args.placeholder;
+    // Theme detection and application
+    function detectTheme() {
+        // Check Streamlit's theme from parent document
+        const stApp = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+        if (stApp) {
+            const bgColor = window.parent.getComputedStyle(stApp).backgroundColor;
+            // Parse RGB values - dark themes have low luminance
+            const rgb = bgColor.match(/\\d+/g);
+            if (rgb) {
+                const luminance = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+                return luminance < 0.5 ? 'dark' : 'light';
+            }
+        }
+        // Fallback to system preference
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-    if (args.disabled) {
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            container.setAttribute('data-theme', 'dark');
+        } else {
+            container.removeAttribute('data-theme');
+        }
+    }
+
+    // Apply theme on load
+    applyTheme(detectTheme());
+
+    // Watch for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        applyTheme(detectTheme());
+    });
+
+    // Apply args from Python
+    if (data && data.placeholder) {
+        textInput.placeholder = data.placeholder;
+    }
+
+    if (data && data.disabled) {
         textInput.disabled = true;
         sendBtn.disabled = true;
         fileBtn.disabled = true;
@@ -190,7 +248,7 @@ export default function(component) {
             file: fileData
         };
 
-        setTriggerValue(message);
+        setTriggerValue('message', message);
 
         textInput.value = '';
         clearFile();
@@ -267,18 +325,19 @@ def chat_input_with_upload(
         'size', and 'data' (base64 decoded bytes).
     """
     result = _component_func(
-        placeholder=placeholder,
-        disabled=disabled,
+        data={"placeholder": placeholder, "disabled": disabled},
         key=key,
-        default=None,
+        on_message_change=lambda: None,
     )
 
-    if result is None:
+    # result.message contains our trigger value
+    if result.message is None:
         return None
 
     # Process the result
-    text = result.get("text", "")
-    file_info = result.get("file")
+    message = result.message
+    text = message.get("text", "")
+    file_info = message.get("file")
 
     processed_file = None
     if file_info:
