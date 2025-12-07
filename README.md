@@ -1,5 +1,11 @@
 # streamlit-chat-input-fileupload
 
+[![GitHub Actions](https://github.com/stellarshenson/streamlit_chat_input_fileupload/actions/workflows/ci.yml/badge.svg)](https://github.com/stellarshenson/streamlit_chat_input_fileupload/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/streamlit-chat-input-fileupload.svg)](https://pypi.org/project/streamlit-chat-input-fileupload/)
+[![Total PyPI downloads](https://static.pepy.tech/badge/streamlit-chat-input-fileupload)](https://pepy.tech/project/streamlit-chat-input-fileupload)
+[![Brought To You By KOLOMOLO](https://img.shields.io/badge/Brought%20To%20You%20By-KOLOMOLO-00ffff?style=flat)](https://kolomolo.com)
+[![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-blue?style=flat)](https://www.paypal.com/donate/?hosted_button_id=B4KPBJDLLXTSA)
+
 A Streamlit custom component that extends the standard `st.chat_input` with file upload capability. Drop-in replacement for building chat interfaces that need document and image attachments.
 
 ![Attaching a file to the chat input](.resources/screenshot-chat1.png)
