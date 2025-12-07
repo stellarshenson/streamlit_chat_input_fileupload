@@ -10,8 +10,7 @@ from streamlit_chat_input_fileupload.chat_input_with_upload import (
 from streamlit_chat_input_fileupload.config import (
     AWS_PROFILE,
     AWS_REGION,
-    CLAUDE_MODELS,
-    DEFAULT_MODEL,
+    BEDROCK_MODEL,
     MAX_TOKENS,
 )
 
@@ -33,16 +32,10 @@ def get_bedrock_client():
 
 client = get_bedrock_client()
 
-# Sidebar for model selection
+# Sidebar
 with st.sidebar:
     st.header("Settings")
-    selected_model = st.selectbox(
-        "Model",
-        options=list(CLAUDE_MODELS.keys()),
-        index=list(CLAUDE_MODELS.keys()).index(DEFAULT_MODEL),
-    )
-    model_id = CLAUDE_MODELS[selected_model]
-    st.caption(f"Model ID: `{model_id}`")
+    st.caption(f"Model: `{BEDROCK_MODEL}`")
 
     if st.button("Clear Chat"):
         st.session_state.messages = []
@@ -246,7 +239,7 @@ if user_input:
                 with st.spinner("Thinking..."):
                     try:
                         response = client.converse(
-                            modelId=model_id,
+                            modelId=BEDROCK_MODEL,
                             messages=bedrock_messages,
                             inferenceConfig={"maxTokens": MAX_TOKENS},
                         )
