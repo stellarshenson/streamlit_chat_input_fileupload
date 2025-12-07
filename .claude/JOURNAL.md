@@ -30,3 +30,6 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 
 9. **Task - Add publish target**: Added PyPI publishing support to Makefile<br>
    **Result**: Added `twine` to dev dependencies in `pyproject.toml`. Added `publish` target to Makefile that depends on `build` and runs `twine upload dist/*` to publish package to PyPI.
+
+10. **Task - Add CI workflow and tests**: Created GitHub Actions workflow and comprehensive test suite<br>
+    **Result**: Created `.github/workflows/ci.yml` with test and build jobs using uv, Python 3.12, ruff linting, and pytest. Added `tests/test_component.py` with 20 tests covering component imports, config imports, mock Bedrock responses, message format validation, file processing (base64 encoding, extension mapping, MIME type mapping). Enhanced `pyproject.toml` ruff config with additional lint rules (E, W, F, B, C4, UP, SIM) and pytest configuration. Removed old `test_data.py` example file.

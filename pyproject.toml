@@ -23,11 +23,18 @@ include-package-data = true
 
 [tool.ruff]
 line-length = 99
-src = [ "streamlit_chat_input_fileupload",]
-include = [ "pyproject.toml", "streamlit_chat_input_fileupload/**/*.py",]
+src = [ "streamlit_chat_input_fileupload", "tests",]
+include = [ "pyproject.toml", "streamlit_chat_input_fileupload/**/*.py", "tests/**/*.py",]
 
 [tool.ruff.lint]
-extend-select = [ "I",]
+extend-select = [ "I", "E", "W", "F", "B", "C4", "UP", "SIM",]
+ignore = [ "E501",]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
 
 [tool.setuptools.packages.find]
 where = [ ".",]
