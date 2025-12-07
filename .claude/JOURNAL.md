@@ -27,3 +27,6 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 
 8. **Task - Externalize model config**: Moved Bedrock model configuration to environment variables<br>
    **Result**: Replaced `CLAUDE_MODELS` dict and `DEFAULT_MODEL` in `config.py` with single `BEDROCK_MODEL = os.getenv("BEDROCK_MODEL")`. Updated `.env` with active `BEDROCK_MODEL` inference profile ARN for sonnet-3.7, commented out alternatives (haiku, sonnet, sonnet-4, sonnet-4.5, opus, opus-4.5). Updated `.env.example` with `YOUR_ACCOUNT_ID` placeholders. Simplified `app.py` sidebar - removed model selector dropdown, displays configured model. Fixed pyproject.toml license classifier conflict with PEP 639 license expression. Created `.env.example` for distribution.
+
+9. **Task - Add publish target**: Added PyPI publishing support to Makefile<br>
+   **Result**: Added `twine` to dev dependencies in `pyproject.toml`. Added `publish` target to Makefile that depends on `build` and runs `twine upload dist/*` to publish package to PyPI.

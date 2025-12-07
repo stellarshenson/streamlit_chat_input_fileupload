@@ -1,4 +1,4 @@
-.PHONY: clean lint format requirements upgrade build sync_data_up sync_data_down sync_models_up sync_models_down test docs docs_serve run_streamlit
+.PHONY: clean lint format requirements upgrade build publish sync_data_up sync_data_down sync_models_up sync_models_down test docs docs_serve run_streamlit
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -145,6 +145,11 @@ install: create_environment requirements clean .env
 build: clean install test increment_build_number
 	@echo "$(MSG_PREFIX) building $(MODULE_NAME)"
 	$(PROJECT_DIR)/.venv/bin/python -m build --wheel
+
+## Publish package to PyPI
+publish: build
+	@echo "$(MSG_PREFIX) publishing $(MODULE_NAME) to PyPI"
+	$(PROJECT_DIR)/.venv/bin/python -m twine upload dist/*
 
 ## Increment build number
 increment_build_number:

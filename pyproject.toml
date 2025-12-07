@@ -16,7 +16,7 @@ name = "Stellars Henson"
 email = "konrad.jelen@gmail.com"
 
 [project.optional-dependencies]
-dev = [ "build", "ipykernel", "ipython", "nbdime", "pip", "pytest", "pytest-cov", "toml", "ruff",]
+dev = [ "build", "ipykernel", "ipython", "nbdime", "pip", "pytest", "pytest-cov", "toml", "ruff", "twine",]
 
 [tool.setuptools]
 include-package-data = true
