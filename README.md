@@ -1,6 +1,19 @@
 # streamlit-chat-input-fileupload
 
-A Streamlit custom component providing a chat input box with integrated file upload.
+A Streamlit custom component that extends the standard `st.chat_input` with file upload capability. Drop-in replacement for building chat interfaces that need document and image attachments.
+
+![Attaching a file to the chat input](.resources/screenshot-chat1.png)
+
+![LLM consuming the message with attached file](.resources/screenshot-chat2.png)
+
+## Features
+
+- Combined text input and file upload in a single component
+- Paperclip button for file selection with filename indicator
+- Supports images (PNG, JPG, GIF, WebP) and documents (PDF, CSV, TXT, XLSX, DOCX, MD, HTML)
+- Auto-detects light/dark theme from Streamlit's settings
+- Returns message text and file data (as bytes) in a single dict
+- Built with Streamlit Components v2 API
 
 ## Installation
 
@@ -73,19 +86,6 @@ st.download_button(
     mime="text/csv",
 )
 ```
-
-## Screenshots
-
-![Chat input with file upload - light theme](.resources/screenshot-chat1.png)
-
-![Chat input with file upload - dark theme](.resources/screenshot-chat2.png)
-
-## Features
-
-- Text input with send button
-- File attachment button
-- Auto light/dark theme detection
-- Supports images and documents
 
 ## License
 
