@@ -74,6 +74,12 @@ st.download_button(
 )
 ```
 
+## Screenshots
+
+![Chat input with file upload - light theme](.resources/screenshot-chat1.png)
+
+![Chat input with file upload - dark theme](.resources/screenshot-chat2.png)
+
 ## Features
 
 - Text input with send button
