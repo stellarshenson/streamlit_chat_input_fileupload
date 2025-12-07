@@ -33,3 +33,6 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 
 10. **Task - Add CI workflow and tests**: Created GitHub Actions workflow and comprehensive test suite<br>
     **Result**: Created `.github/workflows/ci.yml` with test and build jobs using uv, Python 3.12, ruff linting, and pytest. Added `tests/test_component.py` with 20 tests covering component imports, config imports, mock Bedrock responses, message format validation, file processing (base64 encoding, extension mapping, MIME type mapping). Enhanced `pyproject.toml` ruff config with additional lint rules (E, W, F, B, C4, UP, SIM) and pytest configuration. Removed old `test_data.py` example file.
+
+11. **Task - Improve README documentation**: Restructured README with screenshots and features at top<br>
+    **Result**: Added `.resources/` directory with two screenshots (`screenshot-chat1.png` showing file attachment, `screenshot-chat2.png` showing LLM consuming message with file). Restructured README.md to lead with project description, screenshots, and comprehensive features list (combined input/upload, paperclip button, supported file types, theme auto-detection, v2 API). Moved screenshots and features from bottom to top of README for better first impression.
